@@ -19,7 +19,7 @@ Under `build/` there is a version already compiled under my own Linux computer, 
 # Usage
 
 `domrec` requires these three arguments:
-```bash
+```
 domrec <input_base> <output_base> <mode>
 ```
 
