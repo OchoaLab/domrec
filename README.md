@@ -1,4 +1,4 @@
-# `domrec` (DOMinant / RECessive)
+# `domrec`: DOMinant / RECessive reencoder
 
 `domrec` is a very simple reencoder of plink BED/BIM/FAM files to dominant, recessive, or dominance deviation, so those modes can be tested with complex GWAS models that otherwise don't support them (i.e. generalized mixed-effects models).
 This c++ project converts genotypes on the fly, using practically no memory even for very large files.
