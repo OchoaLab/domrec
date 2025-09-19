@@ -13,7 +13,7 @@
 int main(int argc, char **argv) {
   // 4 because it counts its own name as argument always
   if ( argc != 4 ) {
-    std::cout << "Usage: admixcor <base_in> <base_out> <mode>\nBase is prefix of .bed files (without extension), assumes .bim and .fam also exist\nModes of output encoding: dom (dominance), rec (recessive), dev (dominance deviation)\n";
+    std::cout << "Usage: domrec <base_in> <base_out> <mode>\nBase is prefix of .bed files (without extension), assumes .bim and .fam also exist\nModes of output encoding: dom (dominance), rec (recessive), dev (dominance deviation)\n";
     return EXIT_FAILURE;
   }
 
