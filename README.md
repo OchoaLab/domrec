@@ -26,6 +26,6 @@ domrec <input_base> <output_base> <mode>
 - `<input_base>` is the shared base name of the input plink `.bed`, `.bim`, and `.fam` files, all of which are required.
 - `<output_base>` is the base name of the output file.  `.bed` extension is automatically added, but `.bim` and `.fam` are not created (they are not modified by this reencoding, so they can simply be copied or linked from the input).
 - `<mode>` must equal one of these three choices, which describes the transformation:
-  - `dom`: dominant encoding (changes heterozygotes (x=1) to effect allele homozygotes (x=2))
-  - `rec`: recessive encoding (changes heterozygotes (x=1) to non-effect allele homozygotes (x=0))
+  - `dom`: dominant encoding (changes heterozygotes (x=1) to minor allele homozygotes (x=2 if effect allele was minor, x=0 otherwise))
+  - `rec`: recessive encoding (changes heterozygotes (x=1) to major allele homozygotes (x=0 if effect allele was minor, x=2 otherwise))
   - `dev`: dominance deviation encoding (changes heterozygotes (x=1) to effect allele homozygotes (x=2) and effect allele homozygotes (x=2) to non-effect allele homozygotes (x=0))

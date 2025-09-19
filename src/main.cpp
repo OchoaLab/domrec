@@ -7,7 +7,8 @@
 #include "constants.h"
 #include "count_lines.h"
 
-// dominant or recessive is for the counted/effect variant, but it is reverse for the other variant!
+// NEW: Dominant or recessive is for the minor variant, which is most likely to be the disease variant
+// OLD: Dominant or recessive is for the counted/effect variant, but it is reverse for the other variant!
 
 int main(int argc, char **argv) {
   // 4 because it counts its own name as argument always
@@ -116,6 +117,42 @@ int main(int argc, char **argv) {
       std::cerr << "Error: truncated file: row " << i+1 << " terminated at " << file_in_stream.gcount() << " bytes, expected " << n_buf << ".\n"; // convert to 1-based coordinates
       return EXIT_FAILURE;
     }
+
+    // for dom or rec versions, determine if minor allele is counted or not
+    // use this info to set locus-specific mode and make our lives simple
+    std::string mode_locus = mode;
+    if ( mode != "dev" ) {
+      size_t ac = 0;
+      size_t an = 0;
+      // this loops resembles the main one below, see that for more detailed comments, including table explaining BED encoding
+      j = 0; // individuals
+      for (k = 0; k < n_buf; k++) {
+	buf_in_k = buffer_in[k];
+	for (pos = 0; pos < 4; pos++, j++) {
+	  if (j < n_ind) {
+	    xij = buf_in_k & 3;
+	    // main difference is here how we calculate counts
+	    if ( xij != 1 ) { // != NA
+	      an++; // increment allele number (will do x2 later)
+	      if ( xij == 2 ) { // == 1
+		ac++;
+	      } else if ( xij == 0 ) { // == 2
+		ac = ac + 2;
+	      }
+	    }
+	    buf_in_k = buf_in_k >> 2;
+	  }
+	}
+      }
+      // determine if we're not counting minor allele!
+      if ( ac > an ) {
+	// in this case want to reverse local mode vs global one
+	if ( mode == "dom" ) {
+	  mode_locus = "rec";
+	} else 
+	  mode_locus = "dom";
+      }
+    }
     
     // zero out output buffer for new row
     std::fill( buffer_out.begin(), buffer_out.end(), 0 );
@@ -155,8 +192,8 @@ int main(int argc, char **argv) {
 	  // all cases require editing the heterozygote
 	  if ( xij == 2 ) {
 	    // in paper encoding, this maps 1 to 0 (rec) or 2 (dom and dev)
-	    xij = mode == "rec" ? 3 : 0;
-	  } else if ( xij == 0 && mode == "dev" )
+	    xij = mode_locus == "rec" ? 3 : 0;
+	  } else if ( xij == 0 && mode_locus == "dev" )
 	      xij = 3; // in paper encoding, this maps 2 to 0 (dev only)
 	  
 	  // shift input packed data, throwing away genotype we just processed
